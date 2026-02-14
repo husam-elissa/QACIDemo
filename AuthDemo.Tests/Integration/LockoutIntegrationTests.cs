@@ -14,7 +14,7 @@ namespace AuthDemo.Tests.Integration;
 public sealed class LockoutIntegrationTests
 {
     [Fact]
-    public void User_should_lock_after_threshold_failed_logins()
+    public void User_should_lock_after_five_failed_logins()
     {
         var store = new AuthDemo.InMemoryUserStore();
         var auth = new AuthDemo.AuthService(store);
@@ -22,14 +22,16 @@ public sealed class LockoutIntegrationTests
         // Register a known user.
         auth.Register("sam", "Password1").Should().BeTrue();
 
-        // Fail login exactly LockoutThreshold times.
-        for (int i = 0; i < AuthDemo.AuthService.LockoutThreshold; i++)
+        // QA policy requirement: lock after exactly 5 failed attempts.
+        for (int i = 0; i < 5; i++)
         {
             auth.Login("sam", "WrongPass1").Should().BeFalse();
         }
 
         // Once locked, even correct password should fail.
-        auth.Login("sam", "Password1").Should().BeFalse();
+        auth.Login("sam", "Password1")
+        .Should()
+        .BeFalse("the account should be locked after five failed login attempts");
     }
 
     [Fact]
@@ -46,8 +48,8 @@ public sealed class LockoutIntegrationTests
         // Successful login resets failures and unlocks.
         auth.Login("sam", "Password1").Should().BeTrue();
 
-        // Now do threshold-1 failures; user should NOT be locked yet.
-        for (int i = 0; i < AuthDemo.AuthService.LockoutThreshold - 1; i++)
+        // Now do threshold-4 failures; user should NOT be locked yet.
+        for (int i = 0; i < AuthDemo.AuthService.LockoutThreshold - 4; i++)
         {
             auth.Login("sam", "WrongPass1").Should().BeFalse();
         }
