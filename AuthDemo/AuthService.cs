@@ -17,7 +17,7 @@ public sealed class AuthService
     ///
     /// In the demo, we intentionally change this value later to show CI failing.
     /// </summary>
-    public const int LockoutThreshold = 5;
+    public const int LockoutThreshold = 6;
 
     public AuthService(IUserStore store)
     {
