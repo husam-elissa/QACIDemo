@@ -1,12 +1,14 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+# This workflow builds and tests the AuthDemo solution
+# It runs automatically on every push to the master branch
 
 name: ci
 
 on:
+  workflow_dispatch:  # Allows manual trigger from GitHub UI
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
+    branches: [ "master" ]
 
 jobs:
   build-and-test:
@@ -28,5 +30,4 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: run tests
-        run: dotnet test --configuration Release --no-build
-
+        run: dotnet test --configuration Release --no-build --verbosity normal
